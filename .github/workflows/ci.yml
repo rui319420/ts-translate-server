@@ -1,0 +1,37 @@
+# 1. ワークフローの名前 (Actionsタブに表示されます)
+name: Node.js CI
+
+# 2. ワークフローを実行する「きっかけ」
+on:
+  # 'main' ブランチに 'push' された時
+  push:
+    branches: [ "main" ]
+  # (手動でも実行できるようにする - オプション)
+  workflow_dispatch:
+
+# 3. 実行する「仕事」の内容
+jobs:
+  # 'build' という名前の仕事 (名前は自由)
+  build:
+    # 4. 実行する環境 (Ubuntuの最新版)
+    runs-on: ubuntu-latest
+
+    # 5. 実行する「手順」
+    steps:
+      # 5-1. リポジトリのコードをダウンロードする
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 5-2. Node.js (v20) をセットアップする
+      - name: Setup Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 5-3. npm install を実行する
+      - name: Install dependencies
+        run: npm install
+
+      # 5-4. npm run build を実行する (TypeScriptのコンパイル)
+      - name: Build project
+        run: npm run build
