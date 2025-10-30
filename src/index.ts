@@ -1,14 +1,20 @@
 import express, { Request, Response } from 'express';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 const app = express();
-const POST = 3000;
+const PORT = 3000;
 
 app.use(express.json());
 
 app.get('/', (_req: Request, res: Response) => {
-    res.send('翻訳サーバーが起動しています。/trans')
+    res.send('翻訳サーバーが起動しています。/translate にPOSTしてください。')
 })
+
+interface MyMemoryResponseData {
+    responseData: {
+        translatedText: string;
+    };
+}
 
 app.post('/translate', async (req: Request, res: Response) => {
     try {
@@ -23,9 +29,9 @@ app.post('/translate', async (req: Request, res: Response) => {
 
         const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
             text
-        )}&Langpair=${sourceLang}|${targetLang}`;
+        )}&langpair=${sourceLang}|${targetLang}`;
         
-        const apiResponse = await axios.get(apiUrl);
+        const apiResponse: AxiosResponse<MyMemoryResponseData> = await axios.get(apiUrl);
         const translatedText = apiResponse.data.responseData.translatedText;
 
         res.json({
@@ -37,10 +43,10 @@ app.post('/translate', async (req: Request, res: Response) => {
         
     }catch (error) {
         console.error('翻訳エラー', error);
-        res.status(500).json({ error: '翻訳所りちゅにエラーが発生しました'});
+        res.status(500).json({ error: '翻訳処理中にエラーが発生しました'});
     }
 });
 
-app.listen(POST, () => {
-    console.log(`サーバーが http://localhost:${POST} で起動しました`);
+app.listen(PORT, () => {
+    console.log(`サーバーが http://localhost:${PORT} で起動しました`);
 });
