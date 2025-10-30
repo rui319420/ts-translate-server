@@ -1,0 +1,10 @@
+echo "
+# Node.js
+node_modules/
+dist/
+npm debug.log*
+
+# OS specific
+.DS_Store
+Thumbs.db
+" > .gitignore
